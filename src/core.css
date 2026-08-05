@@ -147,7 +147,11 @@
   --wg-text:           var(--db-primary);    /* body copy is navy, not black */
   --wg-text-secondary: #5A6A82;
   --wg-text-muted:     #8A96A8;
+  /* Two distinct roles on a dark brand surface — do not conflate them:
+     -on-brand is a softened off-white for body copy; -inverse is true white
+     for chrome that must read as crisp (header text, wordmarks). */
   --wg-text-on-brand:  #eef3f9;
+  --wg-text-inverse:   var(--db-white);
 
   /* -- Border ------------------------------------------------------------- */
   --wg-border:         rgba(22, 46, 81, 0.1); /* canonical navy @ 10% */
