@@ -126,6 +126,10 @@
   --wg-brand:          var(--db-primary);    /* canonical navy #162e51 */
   --wg-brand-deep:     var(--db-navy-900);
   --wg-brand-light:    var(--db-navy-500);
+  /* One step lighter than --wg-brand: for a band that must read as RAISED
+     above the brand surface rather than as a different colour. This is the
+     subnav pattern — distinguished by tone + elevation, never a divider rule. */
+  --wg-brand-raised:   var(--db-navy-600);
 
   /* -- Accents ------------------------------------------------------------ */
   --wg-accent:         var(--wg-un-blue);    /* UN blue — links, primary accent */
