@@ -1,0 +1,17 @@
+/* ============================================================================
+   WeGovNYC Design System — convenience entry
+   ----------------------------------------------------------------------------
+   Loads the core plus BOTH brand variants. Safe because each variant is scoped
+   to its own class/attribute, so nothing applies until you opt a subtree in.
+
+   Prefer importing core + the single variant you need when a product only ever
+   renders one brand — that keeps the shipped CSS honest about what the product
+   actually is:
+
+     @import '@wegovnyc/design-tokens/core.css';
+     @import '@wegovnyc/design-tokens/unnyc.css';
+   ========================================================================== */
+
+@import url('./core.css');
+@import url('./variant-wegov.css');
+@import url('./variant-unnyc.css');

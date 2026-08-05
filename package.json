@@ -1,0 +1,20 @@
+{
+  "name": "@wegovnyc/design-tokens",
+  "version": "0.1.0",
+  "description": "WeGovNYC design system — reference + semantic tokens with per-brand variants (wegov, unnyc). CSS custom properties only; no build step.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "files": [
+    "src"
+  ],
+  "exports": {
+    ".": "./src/index.css",
+    "./index.css": "./src/index.css",
+    "./core.css": "./src/core.css",
+    "./wegov.css": "./src/variant-wegov.css",
+    "./unnyc.css": "./src/variant-unnyc.css"
+  }
+}

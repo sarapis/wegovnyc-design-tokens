@@ -1,0 +1,31 @@
+/* ============================================================================
+   WeGovNYC Design System — VARIANT: wegov
+   ----------------------------------------------------------------------------
+   The WeGovNYC marketing site (wegov.nyc).
+
+   Apply with class `wg-wegov` or `[data-brand="wegov"]`. On wegov.nyc the
+   existing theme hook is `:root[data-theme='wegov']`, so the practical move is
+   to put `data-brand="wegov"` on the same <html> element rather than invent a
+   second switch.
+
+   ⚠ Like the unnyc variant, this overrides almost nothing on purpose. See
+   variant-unnyc.css for the audit: the two brands resolve to identical token
+   values today. core.css holds the shared language; this file is the seam for
+   wegov.nyc-specific divergence.
+
+   Divergence knobs and the override rule are identical to the unnyc variant —
+   change SEMANTIC (--wg-*) tokens only, never the shared reference tier.
+
+   Migration note: wegov.css still maps its own legacy names
+   (--foreground, --primary-color, --wegov-surface-alt, --wegov-radius-*, …)
+   onto the reference tier directly. Those aliases should be repointed at the
+   SEMANTIC tier (e.g. `--wegov-surface-alt: var(--wg-surface-alt)`), which is
+   a value-identical change. Until that lands, wegov.nyc consumes the system's
+   values without going through its semantics.
+   ========================================================================== */
+
+.wg-wegov,
+[data-brand='wegov'] {
+  /* See variant-unnyc.css — assertable marker, no visual effect. */
+  --wg-brand-id: wegov;
+}

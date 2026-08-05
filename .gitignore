@@ -1,0 +1,5 @@
+node_modules/
+.DS_Store
+*.log
+
+# No build step — src/ IS the published artifact. Nothing to ignore here.

@@ -1,0 +1,40 @@
+/* ============================================================================
+   WeGovNYC Design System — VARIANT: unnyc
+   ----------------------------------------------------------------------------
+   The UNNYC campaign site (unnyc.wegov.nyc).
+
+   Apply with class `wg-unnyc` or `[data-brand="unnyc"]` on the subtree it
+   governs — for UNNYC that is the whole page wrapper.
+
+   ⚠ THIS VARIANT DELIBERATELY OVERRIDES ALMOST NOTHING, and that is the
+   finding, not an oversight. Audited 2026-08-05: wegov.nyc and UNNYC already
+   resolve to IDENTICAL token values — same canonical navy, same UN-blue and
+   gold, same warm neutrals (#F8F6F0 / #F4F1EB), same shadow ramp on #1b2a4a,
+   same 6/10/16/24 radii, same ease curve. They were two prefixes over one
+   design language, not two designs.
+
+   So the shared language lives in core.css and this file is the SEAM: the one
+   place UNNYC-specific divergence belongs when it is actually wanted. Copying
+   core's values in here "for completeness" would rebuild the duplication this
+   package exists to delete — don't.
+
+   Divergence knobs, if UNNYC should ever pull away from wegov.nyc:
+
+     Voice      --wg-font-display, --wg-display-weight
+     Rhythm     --wg-section-y, --wg-card-pad, --wg-container
+     Emphasis   --wg-accent, --wg-accent-warm  (gold is "active", not decor)
+     Warmth     --wg-surface-warm, --wg-surface-alt
+     Softness   --wg-radius-*
+     Elevation  --wg-shadow-*
+
+   Override the SEMANTIC token, never the reference tier — reference values are
+   shared with wegov.nyc, so editing them changes both brands at once.
+   ========================================================================== */
+
+.wg-unnyc,
+[data-brand='unnyc'] {
+  /* Identifies the active variant. Consumed by nothing visual; exists so the
+     variant is assertable at runtime (see the package README's smoke test)
+     and so this file has an observable effect. */
+  --wg-brand-id: unnyc;
+}
