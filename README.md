@@ -50,6 +50,36 @@ this package deletes. Don't.
 
 The divergence knobs are listed in each variant file.
 
+## State colours
+
+Four states — `danger`, `success`, `warning`, `info` — each with four roles:
+
+| Token | Use |
+|---|---|
+| `--wg-<state>` | The colour itself: borders, icons, rules |
+| `--wg-<state>-surface` | Soft tinted background for a message block |
+| `--wg-<state>-text` | Darkened, for body copy **on that surface** |
+| `--wg-<state>-on-brand` | Lightened, for use **on the dark brand surface** |
+
+**`-on-brand` is not a nicety.** On `--wg-brand` (`#162e51`), `--db-danger`
+measures **1.95:1** — a clear WCAG failure — while `--wg-danger-on-brand` is
+**6.20:1**. An error message on the navy campaign form styled with the plain
+danger colour is unreadable. Use `-on-brand` whenever the backdrop is
+`--wg-brand` or `--wg-brand-deep`.
+
+⚠ **`--wg-warning` is 3.16:1 on white — large text or non-text only.** For
+warning body copy on a light surface use `--wg-warning-text`.
+
+Every other pairing passes AA body text; the measured figures are in
+`core.css` beside the tokens.
+
+**Provenance.** `--wg-danger-on-brand` is `#FF8F8F`, already shipping and
+eyeballed in the UNNYC campaign forms. The other three `-on-brand` values are
+**computed** — the same lightness and saturation as that one, applied to each
+state's own hue, a rule which reproduces `#FF8F8F` exactly for danger. They are
+accessible by measurement but have not been seen in product. Eyeball before
+first use, and preserve the rule rather than the individual value.
+
 ## Known warts (deliberate, not oversights)
 
 These were all left alone so the adoption refactor could be proven

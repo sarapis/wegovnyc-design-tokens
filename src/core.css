@@ -160,6 +160,60 @@
   /* -- Border ------------------------------------------------------------- */
   --wg-border:         rgba(22, 46, 81, 0.1); /* canonical navy @ 10% */
 
+  /* -- States ------------------------------------------------------------
+     Four states, four roles each. The reference tier has carried
+     --db-<state>/-bg/-fg since the beginning, but nothing exposed them as
+     semantics, so products hardcoded state colours — which is precisely the
+     bug the tier split exists to prevent. (UNNYC shipped a literal #ff8f8f in
+     three places for exactly this reason.)
+
+       --wg-<state>            the colour itself: borders, icons, rules
+       --wg-<state>-surface    soft tinted background for a message block
+       --wg-<state>-text       darkened, for body copy ON that surface
+       --wg-<state>-on-brand   lightened, for use ON THE DARK BRAND SURFACE
+
+     ⚠ -on-brand is NOT a nicety. Measured against --wg-brand (#162e51):
+     --db-danger is 1.95:1 — a clear WCAG failure — while the -on-brand
+     variant is 6.20:1. A form error rendered on the navy campaign surface
+     with the plain danger colour is unreadable. Reach for -on-brand any time
+     the backdrop is --wg-brand / --wg-brand-deep.
+
+     Contrast, measured (WCAG 2.1, AA body text needs 4.5:1):
+       danger/success/warning/info -text on their own -surface:
+         8.67 / 8.27 / 6.12 / 8.41  — all pass
+       -on-brand on --wg-brand:
+         6.20 / 11.03 / 10.09 / 8.18 — all pass
+       base on white: 6.98 / 4.62 / 3.16 / 6.72
+       ⚠ --wg-warning is 3.16:1 on white — LARGE TEXT OR NON-TEXT ONLY.
+         For warning body copy on a light surface use --wg-warning-text.
+
+     Provenance, because it should not be guessed at later: the danger
+     -on-brand value is #FF8F8F, already shipping and eyeballed in the UNNYC
+     campaign forms. The other three are COMPUTED — the same lightness and
+     saturation as that value, applied to each state's own hue, which
+     reproduces #FF8F8F exactly for danger. They are accessible by
+     measurement but have not been looked at in product. Eyeball before first
+     use; the rule, not the individual value, is the thing to preserve. */
+  --wg-danger:            var(--db-danger);
+  --wg-danger-surface:    var(--db-danger-bg);
+  --wg-danger-text:       var(--db-danger-fg);
+  --wg-danger-on-brand:   #FF8F8F;
+
+  --wg-success:           var(--db-success);
+  --wg-success-surface:   var(--db-success-bg);
+  --wg-success-text:      var(--db-success-fg);
+  --wg-success-on-brand:  #8FFFA6;   /* computed — see note above */
+
+  --wg-warning:           var(--db-warning);
+  --wg-warning-surface:   var(--db-warning-bg);
+  --wg-warning-text:      var(--db-warning-fg);
+  --wg-warning-on-brand:  #FFD98F;   /* computed — see note above */
+
+  --wg-info:              var(--db-info);
+  --wg-info-surface:      var(--db-info-bg);
+  --wg-info-text:         var(--db-info-fg);
+  --wg-info-on-brand:     #8FD0FF;   /* computed — see note above */
+
   /* -- Elevation ---------------------------------------------------------- */
   /* ⚠ Based on #1b2a4a — the PRE-convergence navy — not on --db-navy-900.
      Both products ship exactly these values, so they are the system's real
