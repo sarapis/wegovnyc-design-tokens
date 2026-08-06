@@ -68,20 +68,28 @@ for (const file of files) {
   const rawLines = raw.split('\n');
   lines.forEach((line, i) => {
     if (/wg-lint-ok/.test(rawLines[i])) return;
-    const m = line.match(/^\s*([a-z-]+)\s*:\s*(.+)$/);
-    if (!m) return;
-    const [, prop, value] = m;
-    if (prop.startsWith('--')) return;              // token definitions are the package's job
 
-    // 2. reference-tier reads
-    for (const ref of value.match(/var\(\s*--db-[a-z0-9-]+/g) || []) {
-      findings.push({ file, line: i + 1, kind: 'reference-tier read', prop, detail: ref.replace('var(', '').trim(), text: rawLines[i].trim() });
-    }
+    // A line may hold several declarations (`.x { color: red; gap: 2px }`), so
+    // split on both block punctuation and `;` rather than assuming the
+    // one-declaration-per-line formatting this codebase happens to use. An
+    // earlier version matched `^prop: value` only and silently missed every
+    // single-line rule — caught by the self-test, not by reading it.
+    for (const segment of line.split(/[{};]/)) {
+      const m = segment.match(/^\s*([a-z-]+)\s*:\s*(.+?)\s*$/);
+      if (!m) continue;
+      const [, prop, value] = m;
+      if (prop.startsWith('--')) continue;          // token definitions are the package's job
 
-    // 1. colour literals — but not the fallback slot of a var()
-    const withoutFallbacks = value.replace(/var\([^)]*\)/g, '');
-    for (const hex of withoutFallbacks.match(HEX) || []) {
-      findings.push({ file, line: i + 1, kind: 'colour literal', prop, detail: hex, text: rawLines[i].trim() });
+      // 2. reference-tier reads
+      for (const ref of value.match(/var\(\s*--db-[a-z0-9-]+/g) || []) {
+        findings.push({ file, line: i + 1, kind: 'reference-tier read', prop, detail: ref.replace('var(', '').trim(), text: rawLines[i].trim() });
+      }
+
+      // 1. colour literals — but not the fallback slot of a var()
+      const withoutFallbacks = value.replace(/var\([^)]*\)?/g, '');
+      for (const hex of withoutFallbacks.match(HEX) || []) {
+        findings.push({ file, line: i + 1, kind: 'colour literal', prop, detail: hex, text: rawLines[i].trim() });
+      }
     }
   });
 }
@@ -104,7 +112,7 @@ const key = (f) => `${f.file}|${f.kind}|${f.detail}|${f.prop}`;
 if (argv.includes('--update-baseline')) {
   const keys = [...new Set(findings.map(key))].sort();
   fs.writeFileSync(BASELINE_FILE, JSON.stringify({ note: 'Known pre-existing findings. Only NEW ones are reported. Regenerate with --update-baseline.', keys }, null, 2) + '\n');
-  console.log(`wg-lint-tokens: baseline written — ${keys.length} known finding${keys.length === 1 ? '' : 's'} in ${BASELINE_FILE}`);
+  console.log(`wg-lint-tokens: baseline written — ${keys.length} distinct finding${keys.length === 1 ? '' : 's'} (${findings.length} occurrence${findings.length === 1 ? '' : 's'}) in ${BASELINE_FILE}`);
   process.exit(0);
 }
 
