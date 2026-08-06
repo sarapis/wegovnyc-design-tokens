@@ -66,8 +66,25 @@ for (const file of files) {
   const raw = fs.readFileSync(file, 'utf8');
   const lines = stripComments(raw).split('\n');
   const rawLines = raw.split('\n');
+  /* `wg-lint-ok` counts if it is on the declaration's own line OR anywhere in
+     the comment block just above it. A one-line-only check sounds fine until
+     you write a real reason, which never fits on one line — the first five
+     annotations in the campaign site all landed above their declaration and
+     were silently ignored. Walk upward past comment/selector lines, stopping
+     at the end of the previous declaration or block. */
+  const annotated = (i) => {
+    if (/wg-lint-ok/.test(rawLines[i])) return true;
+    for (let j = i - 1; j >= 0 && i - j <= 12; j--) {
+      const prev = rawLines[j];
+      if (/wg-lint-ok/.test(prev)) return true;
+      if (/[;}]\s*$/.test(prev)) return false;   // previous declaration/block ended
+      if (!prev.trim()) return false;            // blank line breaks the association
+    }
+    return false;
+  };
+
   lines.forEach((line, i) => {
-    if (/wg-lint-ok/.test(rawLines[i])) return;
+    if (annotated(i)) return;
 
     // A line may hold several declarations (`.x { color: red; gap: 2px }`), so
     // split on both block punctuation and `;` rather than assuming the

@@ -1,6 +1,6 @@
 {
   "name": "@wegovnyc/design-tokens",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "WeGovNYC design system \u2014 reference + semantic tokens with per-brand variants (wegov, unnyc). CSS custom properties only; no build step.",
   "license": "MIT",
   "type": "module",
