@@ -72,6 +72,37 @@ each deserves its own decision.
    / 4.5rem`; `20px` / `96px`) because the reference ramp has no equivalent.
    Snapping them to the nearest reference step is a type change, not a refactor.
 
+## ⚠ Consumers pin to a commit — bump them together
+
+Both sites install this as a **git dependency**, which resolves to a *commit*, not
+a moving version. Adding a token here does **not** make it available to a consumer
+until that consumer reinstalls:
+
+```bash
+npm install --save github:sarapis/wegovnyc-design-tokens
+```
+
+**This has already bitten once.** During the UNNYC migration (2026-08-05) that app
+still had v0.1.0 installed while the package was at v0.3.0. Sixteen rules were
+rewritten to `var(--wg-text-inverse)` — a token that did not exist in the installed
+copy — and every one of them **silently fell back to the inherited colour**. The
+build passed. Nothing warned. It was caught only because a before/after computed-style
+diff flagged 11 elements.
+
+That is the failure mode to design against: **an undefined custom property fails
+silently**, not loudly. `var(--nope)` is not an error; it just makes the declaration
+invalid at computed-value time and the property inherits.
+
+So:
+
+- After adding a token here, reinstall in **every** consumer before using it, and
+  check `node_modules/@wegovnyc/design-tokens/package.json` actually shows the new
+  version.
+- A defensive fallback — `var(--wg-brand-raised, #1f3a63)` — would have masked this
+  rather than surfaced it. That is the trade-off: fallbacks make a stale install
+  invisible instead of merely silent. Prefer no fallback plus a diff you trust.
+- Verify with computed styles, never by reading the token's own text.
+
 ## Verifying a change is value-identical
 
 The adoption refactor was proven pixel-preserving by capturing, before and
