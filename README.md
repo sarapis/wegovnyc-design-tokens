@@ -102,6 +102,41 @@ each deserves its own decision.
    / 4.5rem`; `20px` / `96px`) because the reference ramp has no equivalent.
    Snapping them to the nearest reference step is a type change, not a refactor.
 
+## The lint: `wg-lint-tokens`
+
+The package ships a **warn-only** guard for the one rule that matters:
+
+```bash
+npx wg-lint-tokens                    # scan ./src
+npx wg-lint-tokens --update-baseline  # record known findings
+npx wg-lint-tokens --strict           # exit 1 (opt in; not the default)
+```
+
+Both consumers run it as `prebuild`, so it prints on every local and Vercel build
+and can never fail a deploy. It flags exactly two things, both of which make a
+value **unreachable by the brand variant**:
+
+1. a colour literal in a declaration
+2. a reference-tier read, `var(--db-*)`
+
+**What it deliberately ignores**, so the report stays worth reading: `rgba()`/`hsla()`
+with alpha (overlays like "white at 8%" have no semantic equivalent — flagging ~25
+forever is how a warning becomes wallpaper), hex inside a `var()` fallback, and
+anything annotated `wg-lint-ok` on its own line **or in the comment block directly
+above it**.
+
+**It baselines.** `wegov.nyc`'s legacy `globals.css` alone carries 46 distinct
+pre-system literals; those are recorded in `.wg-lint-baseline.json` and only NEW
+findings are reported. Keys are file+kind+value+property, never line numbers, so an
+edit above a finding doesn't resurface it. Config: `.wg-lintrc.json`
+(`{ "roots": [...], "ignore": ["printable-doc.css"] }`) — print stylesheets are
+legitimately brand-independent.
+
+⚠ **Test it by trying to defeat it.** Two bugs shipped past review and were caught
+only by deliberately adding a violation: it skipped every single-line rule
+(`.x { color: #abc; }`) because it matched `^prop: value` per line, and `wg-lint-ok`
+only matched the declaration's own line, so every multi-line reason was ignored.
+
 ## ⚠ Consumers pin to a commit — bump them together
 
 Both sites install this as a **git dependency**, which resolves to a *commit*, not
